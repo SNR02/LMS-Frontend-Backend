@@ -4,24 +4,24 @@
 
 # Library management System
 
-- This is library management system made in MERN stack.
-- It's a basic library management system which is being developed , and is at early stage of development.
-- I have intgrated the googlePlay books api so that admins can directly enter the book from playBooks if available there.
+- This project is a library management system built using the MERN stack.
+- Currently, this basic library management system is under active development and is in its initial phase.
+- I've incorporated the Google Play Books API, allowing administrators to directly import books from Play Books if they are accessible there.
 
 # Flow
 
-- It has 2 actors for now , student and admin, admin will have all privileges such as adding student , removing student , adding books , removing books and all.
-- Student will not be able to register themselves manually, admin will add/register student by proving an official email and student details and on that email auto generated password is sent and that password is also hashed and saved in database.
-- Student can login into their account by sent password and will be able to access all the functionality a user of type student have , like issuing books but not adding books.
+- The system currently features two roles: student and admin. The admin holds all privileges, including adding and removing students, as well as managing books.
+- Students cannot self-register. Instead, an admin registers them by providing an official email and student details. An auto-generated password is then sent to the given email, and this password is also securely stored in the database after hashing.
+- Students can log into their accounts using the password sent to them. Once logged in, they can perform all functions allocated to the student role, such as borrowing books, but they cannot add new books.
 
 # Authentication Flow:
 
-- On login an access token and refresh token is generated which are JWT made using {sub:userId} as payload and private accesstoken key which is stored in .env file.
-- After generating access token. a session is also created in redis which is blazingly fast session store, it stores session with key user.id.
-- Access token, refresh token and a login flag is sent as httpOnly cookie to front end.
-- Whenever someone try to access the protected routes then they have to send the accesstoken in header(Bearer format) or they have to send it inside cookie by credentials:true property.
-- If client have valid access token then we can verify it with public key and get the payload and payload have user.Id as sub so we can use it to get our session from redis too.
-- If client have valid access token and session then only he will be allowed to access the protected route else not.
+- Upon login, an access token and a refresh token are generated. These are JWTs with a payload consisting of {sub:userId}, and they're created using a private access token key that is stored in the .env file.
+- Along with the access token generation, a session is also created in Redis, a high-speed session store. The session is stored with the key user.id.
+- The access token, refresh token, and a login flag are all sent as HTTP-only cookies to the front end.
+- For access to protected routes, the client must send the access token in the header in the Bearer format, or they must include it in a cookie using the 'credentials:true' property.
+- If the client possesses a valid access token, it can be verified using a public key to extract the payload, which includes the user's ID. This ID can then be used to retrieve the associated session from Redis.
+- Only if the client has both a valid access token and a session will they be granted access to the protected routes; otherwise, access will be denied.
 
 ## API Reference
 
@@ -93,23 +93,24 @@ GET /me
 | `accessToken`  | `cookie` | **Required**. Required for all routes except login |
 | `refreshToken` | `cookie` | **Required**. Required to refresh the access token |
 
-- A sesion is maintained in redis DB in backend , using token deserialization of user takes place and session is also checked during process.
+- In the backend, a session is maintained in the Redis database. During this process, the user's token is deserialized and the session is verified.
+  
+- This session is maintained using the user's ID, which is also utilized as payload during the JWT signing process.
 
-- Session is maintained using the id of the user and that id is also used as payload in jwt during signing.
+- Consequently, when accessing any protected route, the JWT carries the user ID and the user session is verified through the ID stored in the JWT.
 
-- So jwt carries the user id when we go to any protected route and so user session is checked by id stored in jwt.
+- Therefore, it's essential that access tokens be sent with every request after the initial login. These tokens can be sent via:
 
---> That is why access tokens should be sent with every subsequent requests after login, they can be sent as:
+  - Authorization headers in bearer format.
+  - Cookies, which is the preferred method. Just ensure that 'credentials: include' is set when sending requests from the frontend.
 
-- authorization header with bearer format
-- cookies (prefered just set credential include when sending request from frontend)
+- Upon successful login, three cookies are automatically set:
 
---> When user log in automatically 3 cookies are set
-
-- logged_in: boolean for frontend
-- accessToken
-- refreshToken
-  All three of them are httpOnly cookies
+  - logged_in: a boolean for frontend use.
+  - accessToken: the access token.
+  - refreshToken: the refresh token.
+  
+  All three of these are HTTP-only cookies.
 
 ## Run Locally
 
