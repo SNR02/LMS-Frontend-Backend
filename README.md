@@ -117,7 +117,7 @@ GET /me
 Clone the project
 
 ```bash
-  git clone https://github.com/unreal0901/libraryManagementSystem
+  git clone https://github.com/SNR02/LMS-Frontend-Backend.git
 ```
 
 For running the project locally,
