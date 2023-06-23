@@ -16,7 +16,6 @@
 
 # Authentication Flow:
 
-- Admin is already set in the database by us for now, admin can login into the account and add user.
 - On login an access token and refresh token is generated which are JWT made using {sub:userId} as payload and private accesstoken key which is stored in .env file.
 - After generating access token. a session is also created in redis which is blazingly fast session store, it stores session with key user.id.
 - Access token, refresh token and a login flag is sent as httpOnly cookie to front end.
